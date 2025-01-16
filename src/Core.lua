@@ -6,8 +6,8 @@
 function DV.PRE.simulate()
    -- Guard against simulating in redundant places:
    if not (G.STATE == G.STATES.SELECTING_HAND or
-           G.STATE == G.STATES.DRAW_TO_HAND or
-           G.STATE == G.STATES.PLAY_TAROT)
+          G.STATE == G.STATES.DRAW_TO_HAND or
+          G.STATE == G.STATES.PLAY_TAROT)
    then return {score = {min = 0, exact = 0, max = 0}, dollars = {min = 0, exact = 0, max = 0}}
    end
 
@@ -16,9 +16,9 @@ function DV.PRE.simulate()
          if card.facing == "back" then return nil end
       end
       if #(G.hand.highlighted) ~= 0 then
-        for _, joker in ipairs(G.jokers.cards) do
-          if joker.facing == "back" then return nil end
-        end
+         for _, joker in ipairs(G.jokers.cards) do
+            if joker.facing == "back" then return nil end
+         end
       end
    end
 
@@ -71,9 +71,9 @@ end
 
 function DV.PRE.update_on_card_order_change(cardarea)
    if #cardarea.cards == 0 or
-      not (G.STATE == G.STATES.SELECTING_HAND or
-           G.STATE == G.STATES.DRAW_TO_HAND or
-           G.STATE == G.STATES.PLAY_TAROT)
+       not (G.STATE == G.STATES.SELECTING_HAND or
+          G.STATE == G.STATES.DRAW_TO_HAND or
+          G.STATE == G.STATES.PLAY_TAROT)
    then return end
    -- Important not to update on G.STATES.HAND_PLAYED, because it would reset the preview text!
 
@@ -128,7 +128,9 @@ end
 local orig_eval = G.FUNCS.evaluate_play
 function G.FUNCS.evaluate_play(e)
    orig_eval(e)
-   DV.PRE.add_reset_event("after")
+   if not DV.SIM.frozen then
+      DV.PRE.add_reset_event("after")
+   end
 end
 
 local orig_discard = G.FUNCS.discard_cards_from_highlighted
